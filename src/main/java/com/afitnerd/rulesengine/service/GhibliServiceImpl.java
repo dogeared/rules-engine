@@ -70,7 +70,7 @@ public class GhibliServiceImpl implements GhibliService {
     }
 
     @Override
-    public FilmsResponse listMoviesByUrls(List<String> filmUrls) {
+    public FilmsResponse listFilmsByUrls(List<String> filmUrls) {
         try {
             List<Film> films = new ArrayList<>();
             for (String url : filmUrls) {

@@ -57,7 +57,7 @@ public class GhibliController {
             return setStatusAndReturn(personResponse, response);
         }
         Person person = personResponse.getPerson();
-        FilmsResponse filmsResponse = ghibliService.listMoviesByUrls(person.getFilmUrls());
+        FilmsResponse filmsResponse = ghibliService.listFilmsByUrls(person.getFilmUrls());
         if (filmsResponse.getStatus() == ServiceHttpResponse.Status.FAILURE) {
             return setStatusAndReturn(filmsResponse, response);
         }

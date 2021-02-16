@@ -16,6 +16,6 @@ public interface GhibliService {
 
     PeopleResponse listPeople();
     PersonResponse findPersonByName(String name);
-    FilmsResponse listMoviesByUrls(List<String> filmUrls);
+    FilmsResponse listFilmsByUrls(List<String> filmUrls);
     SpeciesResponse findSpeciesByUrl(String speciesUrl);
 }

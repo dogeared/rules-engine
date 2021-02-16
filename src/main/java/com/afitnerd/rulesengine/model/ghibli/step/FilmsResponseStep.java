@@ -23,7 +23,7 @@ public class FilmsResponseStep extends BasicStep {
     @Override
     public ServiceHttpResponse.Status evaluate(KeyValueFieldsRequest request) {
         Person person = fetchState(PERSON_KEY);
-        filmsResponse = ghibliService.listMoviesByUrls(person.getFilmUrls());
+        filmsResponse = ghibliService.listFilmsByUrls(person.getFilmUrls());
         saveState(FILMS_KEY, filmsResponse.getFilms());
         return filmsResponse.getStatus();
     }
