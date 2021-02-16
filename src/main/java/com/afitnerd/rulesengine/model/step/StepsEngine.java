@@ -20,10 +20,10 @@ public class StepsEngine {
 
     public ServiceHttpResponse process(KeyValueFieldsRequest request) {
         Step step =  steps.stream()
-          .filter(s -> s.evaluate(request) == ServiceHttpResponse.Status.FAILURE)
-        .findFirst()
-        // if nothing fails, last step must be success
-        .orElse(steps.get(steps.size()-1));
+            .filter(s -> s.evaluate(request) == ServiceHttpResponse.Status.FAILURE)
+            .findFirst()
+            // if nothing fails, last step must be success
+            .orElse(steps.get(steps.size()-1));
         return step.getResponse();
     }
 }
