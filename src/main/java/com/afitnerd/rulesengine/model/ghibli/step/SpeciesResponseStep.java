@@ -4,19 +4,18 @@ import com.afitnerd.rulesengine.model.KeyValueFieldsRequest;
 import com.afitnerd.rulesengine.model.ServiceHttpResponse;
 import com.afitnerd.rulesengine.model.ghibli.Person;
 import com.afitnerd.rulesengine.model.ghibli.apiresponse.SpeciesResponse;
-import com.afitnerd.rulesengine.model.step.Step;
+import com.afitnerd.rulesengine.model.step.BasicStep;
 import com.afitnerd.rulesengine.service.GhibliService;
 
 import java.util.Map;
 
 import static com.afitnerd.rulesengine.model.ghibli.step.PersonResponseStep.PERSON_KEY;
 
-public class SpeciesResponseStep implements Step {
+public class SpeciesResponseStep extends BasicStep {
 
     public static final String SPECIES_KEY = "species";
 
     private final GhibliService ghibliService;
-    private Map<String, Object> stateContainer;
     private SpeciesResponse speciesResponse;
 
     public SpeciesResponseStep(GhibliService ghibliService) {
@@ -24,15 +23,10 @@ public class SpeciesResponseStep implements Step {
     }
 
     @Override
-    public void setStateContainer(Map<String, Object> stateContainer) {
-        this.stateContainer = stateContainer;
-    }
-
-    @Override
     public ServiceHttpResponse.Status evaluate(KeyValueFieldsRequest request) {
-        Person person = (Person)stateContainer.get(PERSON_KEY);
+        Person person = fetchState(PERSON_KEY);
         speciesResponse = ghibliService.findSpeciesByUrl(person.getSpeciesUrl());
-        stateContainer.put(SPECIES_KEY, speciesResponse.getSpecies());
+        saveState(SPECIES_KEY, speciesResponse.getSpecies());
         return speciesResponse.getStatus();
     }
 

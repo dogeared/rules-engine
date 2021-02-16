@@ -6,7 +6,7 @@ import com.afitnerd.rulesengine.model.ghibli.Film;
 import com.afitnerd.rulesengine.model.ghibli.Person;
 import com.afitnerd.rulesengine.model.ghibli.Species;
 import com.afitnerd.rulesengine.model.ghibli.apiresponse.CompositeResponse;
-import com.afitnerd.rulesengine.model.step.Step;
+import com.afitnerd.rulesengine.model.step.BasicStep;
 import org.apache.http.HttpStatus;
 
 import java.util.List;
@@ -16,21 +16,15 @@ import static com.afitnerd.rulesengine.model.ghibli.step.FilmsResponseStep.FILMS
 import static com.afitnerd.rulesengine.model.ghibli.step.PersonResponseStep.PERSON_KEY;
 import static com.afitnerd.rulesengine.model.ghibli.step.SpeciesResponseStep.SPECIES_KEY;
 
-public class CompositeResponseStep implements Step {
-
-    private Map<String, Object> stateContainer;
+public class CompositeResponseStep extends BasicStep {
+    
     private CompositeResponse compositeResponse;
 
     @Override
-    public void setStateContainer(Map<String, Object> stateContainer) {
-        this.stateContainer = stateContainer;
-    }
-
-    @Override
     public ServiceHttpResponse.Status evaluate(KeyValueFieldsRequest request) {
-        Person person = (Person)stateContainer.get(PERSON_KEY);
-        List<Film> films = (List<Film>)stateContainer.get(FILMS_KEY);
-        Species species = (Species)stateContainer.get(SPECIES_KEY);
+        Person person = fetchState(PERSON_KEY);
+        List<Film> films = fetchState(FILMS_KEY);
+        Species species = fetchState(SPECIES_KEY);
         compositeResponse = new CompositeResponse(
             ServiceHttpResponse.Status.SUCCESS, HttpStatus.SC_OK, "success",
             person, films, species
