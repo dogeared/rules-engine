@@ -2,8 +2,9 @@ package com.afitnerd.rulesengine.model.step;
 
 import com.afitnerd.rulesengine.model.KeyValueFieldsRequest;
 import com.afitnerd.rulesengine.model.ServiceHttpResponse;
-
 import java.util.Map;
+
+import static com.afitnerd.rulesengine.model.ServiceHttpResponse.Status;
 
 public interface Step {
 
@@ -30,7 +31,7 @@ public interface Step {
 
     Map<String, Object> getStateContainer();
     void setStateContainer(Map<String, Object> stateContainer);
-    ServiceHttpResponse.Status evaluate(KeyValueFieldsRequest request);
+    Status evaluate(KeyValueFieldsRequest request);
     ServiceHttpResponse getResponse();
 
     class StateContainerException extends RuntimeException {
