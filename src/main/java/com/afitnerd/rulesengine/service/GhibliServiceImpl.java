@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.afitnerd.rulesengine.model.ServiceHttpResponse.Status;
+
 @Service
 public class GhibliServiceImpl implements GhibliService {
 
@@ -38,12 +40,12 @@ public class GhibliServiceImpl implements GhibliService {
                 .execute()
                 .returnResponse();
             return new PeopleResponse(
-                ServiceHttpResponse.Status.SUCCESS, httpResponse.getStatusLine().getStatusCode(),
+                Status.SUCCESS, httpResponse.getStatusLine().getStatusCode(),
             "got list of people", mapper.readValue(httpResponse.getEntity().getContent(), typeRef)
             );
         } catch (IOException e) {
             return new PeopleResponse(
-                ServiceHttpResponse.Status.FAILURE, HttpStatus.SC_BAD_REQUEST, "failed to get a list of people"
+                Status.FAILURE, HttpStatus.SC_BAD_REQUEST, "failed to get a list of people"
             );
         }
     }
@@ -52,9 +54,9 @@ public class GhibliServiceImpl implements GhibliService {
     public PersonResponse findPersonByName(String name) {
         // this is unnecessary - we could use the api directly
         PeopleResponse peopleResponse = listPeople();
-        if (peopleResponse.getStatus() == ServiceHttpResponse.Status.FAILURE) {
+        if (peopleResponse.getStatus() == Status.FAILURE) {
             return new PersonResponse(
-                ServiceHttpResponse.Status.FAILURE, HttpStatus.SC_NOT_FOUND, "list people failed"
+                Status.FAILURE, HttpStatus.SC_NOT_FOUND, "list people failed"
             );
         }
         Optional<Person> person = peopleResponse.getPeople().stream()
@@ -62,10 +64,10 @@ public class GhibliServiceImpl implements GhibliService {
             .findFirst();
         return person
             .map(p -> new PersonResponse(
-                ServiceHttpResponse.Status.SUCCESS, HttpStatus.SC_OK, "found person", p
+                Status.SUCCESS, HttpStatus.SC_OK, "found person", p
             ))
             .orElseGet(() -> new PersonResponse(
-                ServiceHttpResponse.Status.FAILURE, HttpStatus.SC_NOT_FOUND, "person not found"
+                Status.FAILURE, HttpStatus.SC_NOT_FOUND, "person not found"
             ));
     }
 
@@ -81,7 +83,7 @@ public class GhibliServiceImpl implements GhibliService {
             return new FilmsResponse(ServiceHttpResponse.Status.SUCCESS, HttpStatus.SC_OK, "got films", films);
         } catch (IOException e) {
             return new FilmsResponse(
-                ServiceHttpResponse.Status.SUCCESS, HttpStatus.SC_BAD_REQUEST, "got films"
+                Status.SUCCESS, HttpStatus.SC_BAD_REQUEST, "got films"
             );
         }
     }
@@ -93,12 +95,12 @@ public class GhibliServiceImpl implements GhibliService {
                 .execute()
                 .returnResponse();
             return new SpeciesResponse(
-                ServiceHttpResponse.Status.SUCCESS, httpResponse.getStatusLine().getStatusCode(),
+                Status.SUCCESS, httpResponse.getStatusLine().getStatusCode(),
             "found species", mapper.readValue(httpResponse.getEntity().getContent(), Species.class)
             );
         } catch (IOException e) {
             return new SpeciesResponse(
-                ServiceHttpResponse.Status.FAILURE, HttpStatus.SC_BAD_REQUEST, "couldn't find species"
+                Status.FAILURE, HttpStatus.SC_BAD_REQUEST, "couldn't find species"
             );
         }
     }

@@ -8,6 +8,7 @@ import com.afitnerd.rulesengine.model.step.BasicStep;
 import com.afitnerd.rulesengine.service.GhibliService;
 
 import static com.afitnerd.rulesengine.model.ghibli.step.PersonResponseStep.PERSON_KEY;
+import static com.afitnerd.rulesengine.model.ServiceHttpResponse.Status;
 
 public class FilmsResponseStep extends BasicStep {
 
@@ -21,7 +22,7 @@ public class FilmsResponseStep extends BasicStep {
     }
 
     @Override
-    public ServiceHttpResponse.Status evaluate(KeyValueFieldsRequest request) {
+    public Status evaluate(KeyValueFieldsRequest request) {
         Person person = fetchState(PERSON_KEY);
         filmsResponse = ghibliService.listFilmsByUrls(person.getFilmUrls());
         saveState(FILMS_KEY, filmsResponse.getFilms());

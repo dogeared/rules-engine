@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.afitnerd.rulesengine.model.ServiceHttpResponse.Status;
+
 public class StepsEngine {
 
     private final Map<String, Object> stateContainer = new HashMap<>();
@@ -20,7 +22,7 @@ public class StepsEngine {
 
     public ServiceHttpResponse process(KeyValueFieldsRequest request) {
         Step step =  steps.stream()
-            .filter(s -> s.evaluate(request) == ServiceHttpResponse.Status.FAILURE)
+            .filter(s -> s.evaluate(request) == Status.FAILURE)
             .findFirst()
             // if nothing fails, last step must be success
             .orElse(steps.get(steps.size()-1));

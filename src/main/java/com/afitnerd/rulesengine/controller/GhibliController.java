@@ -27,6 +27,7 @@ import java.util.List;
 
 import static com.afitnerd.rulesengine.controller.GhibliController.API_URI;
 import static com.afitnerd.rulesengine.controller.GhibliController.API_VERSION_URI;
+import static com.afitnerd.rulesengine.model.ServiceHttpResponse.Status;
 
 @RestController
 @RequestMapping(API_URI + API_VERSION_URI)
@@ -53,22 +54,22 @@ public class GhibliController {
     @PostMapping(PERSON_ENDPOINT)
     public ServiceHttpResponse findPerson(@RequestBody KeyValueFieldsRequest request, HttpServletResponse response) {
         PersonResponse personResponse = ghibliService.findPersonByName(request.getByName("name"));
-        if (personResponse.getStatus() == ServiceHttpResponse.Status.FAILURE) {
+        if (personResponse.getStatus() == Status.FAILURE) {
             return setStatusAndReturn(personResponse, response);
         }
         Person person = personResponse.getPerson();
         FilmsResponse filmsResponse = ghibliService.listFilmsByUrls(person.getFilmUrls());
-        if (filmsResponse.getStatus() == ServiceHttpResponse.Status.FAILURE) {
+        if (filmsResponse.getStatus() == Status.FAILURE) {
             return setStatusAndReturn(filmsResponse, response);
         }
         List<Film> films = filmsResponse.getFilms();
         SpeciesResponse speciesResponse = ghibliService.findSpeciesByUrl(person.getSpeciesUrl());
-        if (speciesResponse.getStatus() == ServiceHttpResponse.Status.FAILURE) {
+        if (speciesResponse.getStatus() == Status.FAILURE) {
             return setStatusAndReturn(speciesResponse, response);
         }
         Species species = speciesResponse.getSpecies();
         return setStatusAndReturn(new CompositeResponse(
-            ServiceHttpResponse.Status.SUCCESS, HttpStatus.SC_OK, "success",
+            Status.SUCCESS, HttpStatus.SC_OK, "success",
             person, films, species
         ), response);
     }

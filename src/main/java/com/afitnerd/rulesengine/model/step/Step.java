@@ -18,11 +18,7 @@ public interface Step {
 
     @SuppressWarnings("unchecked")
     default <T> T fetchState(String key) {
-        T ret = (T) getStateContainerSafe().get(key);
-        if (ret == null) {
-            throw new StateContainerException(key + " not found in stateContainer");
-        }
-        return ret;
+        return (T) getStateContainerSafe().get(key);
     }
 
     default void saveState(String key, Object value) {

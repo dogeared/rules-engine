@@ -15,18 +15,19 @@ import java.util.Map;
 import static com.afitnerd.rulesengine.model.ghibli.step.FilmsResponseStep.FILMS_KEY;
 import static com.afitnerd.rulesengine.model.ghibli.step.PersonResponseStep.PERSON_KEY;
 import static com.afitnerd.rulesengine.model.ghibli.step.SpeciesResponseStep.SPECIES_KEY;
+import static com.afitnerd.rulesengine.model.ServiceHttpResponse.Status;
 
 public class CompositeResponseStep extends BasicStep {
-    
+
     private CompositeResponse compositeResponse;
 
     @Override
-    public ServiceHttpResponse.Status evaluate(KeyValueFieldsRequest request) {
+    public Status evaluate(KeyValueFieldsRequest request) {
         Person person = fetchState(PERSON_KEY);
         List<Film> films = fetchState(FILMS_KEY);
         Species species = fetchState(SPECIES_KEY);
         compositeResponse = new CompositeResponse(
-            ServiceHttpResponse.Status.SUCCESS, HttpStatus.SC_OK, "success",
+            Status.SUCCESS, HttpStatus.SC_OK, "success",
             person, films, species
         );
         return compositeResponse.getStatus();
