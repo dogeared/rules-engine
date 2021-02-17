@@ -28,6 +28,8 @@ import static com.afitnerd.rulesengine.controller.GhibliController.API_VERSION_U
 import static com.afitnerd.rulesengine.controller.GhibliController.PERSON_BY_ENGINE_ENDPOINT;
 import static com.afitnerd.rulesengine.controller.GhibliController.PERSON_ENDPOINT;
 import static com.afitnerd.rulesengine.model.ServiceHttpResponse.Status;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -88,18 +90,19 @@ public class GhibliControllerTests {
         when(ghibliService.findSpeciesByUrl(SPECIES_URL)).thenReturn(speciesResponse);
     }
 
-    private ResultActions doPerform() throws Exception {
-        return mvc.perform(post(API_URI + API_VERSION_URI + PERSON_ENDPOINT)
+    private ResultActions doPerformBase(String endpoint) throws Exception {
+        return mvc.perform(post(endpoint)
             .contentType(MediaType.APPLICATION_JSON)
             .content(mapper.writeValueAsString(request))
         );
     }
 
+    private ResultActions doPerform() throws Exception {
+        return doPerformBase(API_URI + API_VERSION_URI + PERSON_ENDPOINT);
+    }
+
     private ResultActions doPerformByEngine() throws Exception {
-        return mvc.perform(post(API_URI + API_VERSION_URI + PERSON_BY_ENGINE_ENDPOINT)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(mapper.writeValueAsString(request))
-        );
+        return doPerformBase(API_URI + API_VERSION_URI + PERSON_BY_ENGINE_ENDPOINT);
     }
 
     @Test
@@ -107,6 +110,8 @@ public class GhibliControllerTests {
         setupRequest(Status.FAILURE, null, null);
 
         doPerform().andExpect(status().isNotFound());
+        verify(ghibliService, times(1)).findPersonByName(NAME);
+        verify(ghibliService, times(0)).listFilmsByUrls(FILM_URLS);
     }
 
     @Test
@@ -114,6 +119,9 @@ public class GhibliControllerTests {
         setupRequest(Status.SUCCESS, Status.FAILURE, null);
 
         doPerform().andExpect(status().isBadRequest());
+        verify(ghibliService, times(1)).findPersonByName(NAME);
+        verify(ghibliService, times(1)).listFilmsByUrls(FILM_URLS);
+        verify(ghibliService, times(0)).findSpeciesByUrl(SPECIES_URL);
     }
 
     @Test
@@ -121,6 +129,9 @@ public class GhibliControllerTests {
         setupRequest(Status.SUCCESS, Status.SUCCESS, Status.FAILURE);
 
         doPerform().andExpect(status().isBadRequest());
+        verify(ghibliService, times(1)).findPersonByName(NAME);
+        verify(ghibliService, times(1)).listFilmsByUrls(FILM_URLS);
+        verify(ghibliService, times(1)).findSpeciesByUrl(SPECIES_URL);
     }
 
     @Test
@@ -128,6 +139,9 @@ public class GhibliControllerTests {
         setupRequest(Status.SUCCESS, Status.SUCCESS, Status.SUCCESS);
 
         doPerform().andExpect(status().isOk());
+        verify(ghibliService, times(1)).findPersonByName(NAME);
+        verify(ghibliService, times(1)).listFilmsByUrls(FILM_URLS);
+        verify(ghibliService, times(1)).findSpeciesByUrl(SPECIES_URL);
     }
 
     @Test
@@ -135,6 +149,8 @@ public class GhibliControllerTests {
         setupRequest(Status.FAILURE, null, null);
 
         doPerformByEngine().andExpect(status().isNotFound());
+        verify(ghibliService, times(1)).findPersonByName(NAME);
+        verify(ghibliService, times(0)).listFilmsByUrls(FILM_URLS);
     }
 
     @Test
@@ -142,6 +158,9 @@ public class GhibliControllerTests {
         setupRequest(Status.SUCCESS, Status.FAILURE, null);
 
         doPerformByEngine().andExpect(status().isBadRequest());
+        verify(ghibliService, times(1)).findPersonByName(NAME);
+        verify(ghibliService, times(1)).listFilmsByUrls(FILM_URLS);
+        verify(ghibliService, times(0)).findSpeciesByUrl(SPECIES_URL);
     }
 
     @Test
@@ -149,6 +168,9 @@ public class GhibliControllerTests {
         setupRequest(Status.SUCCESS, Status.SUCCESS, Status.FAILURE);
 
         doPerformByEngine().andExpect(status().isBadRequest());
+        verify(ghibliService, times(1)).findPersonByName(NAME);
+        verify(ghibliService, times(1)).listFilmsByUrls(FILM_URLS);
+        verify(ghibliService, times(1)).findSpeciesByUrl(SPECIES_URL);
     }
 
     @Test
@@ -156,5 +178,8 @@ public class GhibliControllerTests {
         setupRequest(Status.SUCCESS, Status.SUCCESS, Status.SUCCESS);
 
         doPerformByEngine().andExpect(status().isOk());
+        verify(ghibliService, times(1)).findPersonByName(NAME);
+        verify(ghibliService, times(1)).listFilmsByUrls(FILM_URLS);
+        verify(ghibliService, times(1)).findSpeciesByUrl(SPECIES_URL);
     }
 }
